@@ -159,7 +159,7 @@ ORDER BY CASE d.shop_group WHEN '既存' THEN 1 WHEN '既存新店（FY24）' TH
 | ノード数 | 16 |
 | 状態 | **Active（毎朝9時 Schedule有効）** |
 | n8n URL | `http://10.0.2.10:5678` |
-| n8n APIキー | `eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJiMDMwYmJkZi05MzliLTRhMDEtOWE0OS0wM2E0YThhMzllYTMiLCJpc3MiOiJuOG4iLCJhdWQiOiJwdWJsaWMtYXBpIiwianRpIjoiY2ZmMmI0YzAtYWM4YS00Nzg2LThkMWYtMzMyMjhhZjAwYmFmIiwiaWF0IjoxNzc1MDI5ODUyLCJleHAiOjE3Nzc2MDgwMDB9.xAXq6SVqp0BSsPP33DTupvZAmSTe5j2QcCyiSAxlJfk` |
+| n8n APIキー | `.env` の `N8N_API_KEY` を参照 |
 
 ### フロー構成
 
@@ -227,13 +227,13 @@ ORDER BY CASE d.shop_group WHEN '既存' THEN 1 WHEN '既存新店（FY24）' TH
 
 | 項目 | 値 |
 |------|----|
-| LINE WORKS Bot ID | `1420096` |
-| line_token DataTable ID | `6iipvD4qo8LCSyrZ` |
-| Daily Report チャネルID | `a462b64a-d9ec-f929-ed0a-908920e22445` |
-| Google BigQuery credential | `zzJ2dnsMahTnqf38` |
-| Google Sheets credential | `stAsixak35mlitqr` |
-| Bot API エンドポイント | `https://www.worksapis.com/v1.0/bots/{botId}/channels/{channelId}/messages` |
-| Sub-Workflow Line通知（流用元） | `SZyfRwL0wwTII6F5` |
+| LINE WORKS Bot ID | `.env` の `LINEWORKS_BOT_ID` を参照 |
+| line_token DataTable ID | `.env` の `N8N_LINE_TOKEN_DATATABLE_ID` を参照 |
+| Daily Report チャネルID | `.env` の `LINEWORKS_CHANNEL_ID` を参照 |
+| Google BigQuery credential | `.env` の `GCP_BIGQUERY_CREDENTIAL_ID` を参照 |
+| Google Sheets credential | `.env` の `GCP_SHEETS_CREDENTIAL_ID` を参照 |
+| Bot API エンドポイント | `.env` の `LINEWORKS_BOT_API_ENDPOINT` を参照 |
+| Sub-Workflow Line通知（流用元） | `.env` の `N8N_SUB_WORKFLOW_LINE_ID` を参照 |
 
 ---
 

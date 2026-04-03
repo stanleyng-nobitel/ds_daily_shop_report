@@ -1,6 +1,6 @@
 ---
 name: User Profile
-description: n8n運用担当。LINE WORKS連携ワークフロー多数保有。非エンジニア向けのシステム構築が多い。
+description: n8n運用担当。LINE WORKS連携ワークフロー多数保有。非エンジニア向けのシステム構築がいい。
 type: user
 ---
 
