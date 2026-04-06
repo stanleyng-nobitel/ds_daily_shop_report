@@ -156,7 +156,7 @@ ORDER BY CASE d.shop_group WHEN '既存' THEN 1 WHEN '既存新店（FY24）' TH
 |------|----|
 | ワークフロー ID | `jhomsySSFmdWhzfH` |
 | ワークフロー名 | `Daily Store Report → LINE WORKS` |
-| ノード数 | 16 |
+| ノード数 | 22 |
 | 状態 | **Active（毎朝9時 Schedule有効）** |
 | n8n URL | `http://10.0.2.10:5678` |
 | n8n APIキー | `.env` の `N8N_API_KEY` を参照 |
@@ -166,24 +166,48 @@ ORDER BY CASE d.shop_group WHEN '既存' THEN 1 WHEN '既存新店（FY24）' TH
 ```
 [手動実行（テスト用）] または [毎朝9時実行（Schedule）]
  ↓
-[BQ: KPI日次データ取得]（Google BigQuery）
-  → 3行返却（既存 / 既存新店（FY24）/ 新店）
+[BQ: データ品質チェック]（shop_group種類数を確認）
  ↓
-[Flex Message 生成]（Code）
- ↓ （4並列）
- ├─→ [Merge: データ+Token] ← [Get line token]
- │     ↓
- │   [Merge: 全データ合流] ← [Daily Report チャネルID]
- │     ↓
- │   [リクエストボディ生成]
- │     ↓
- │   [LINE WORKS POST] → [完了]
+[IF: shop_group 3種類？]
+ ├─ true（正常）
+ │    ↓
+ │   [BQ: KPI日次データ取得]（Google BigQuery）
+ │     → 3行返却（既存 / 既存新店（FY24）/ 新店）
+ │    ↓
+ │   [Flex Message 生成]（Code）
+ │    ↓ （4並列）
+ │    ├─→ [Merge: データ+Token] ← [Get line token]
+ │    │     ↓
+ │    │   [Merge: 全データ合流] ← [Daily Report チャネルID]
+ │    │     ↓
+ │    │   [リクエストボディ生成]
+ │    │     ↓
+ │    │   [LINE WORKS POST] → [完了]
+ │    │
+ │    └─→ [宛先リスト] ──────────→ [Merge: メールデータ]
+ │        [メールHTML生成] ────────→ [Merge: メールデータ]
+ │                                         ↓
+ │                                    [Gmail送信]
  │
- └─→ [宛先リスト] ──────────→ [Merge: メールデータ]
-     [メールHTML生成] ────────→ [Merge: メールデータ]
-                                       ↓
-                                  [Gmail送信]
+ └─ false（異常: shop_group種類数 ≠ 3）
+      ↓ （並列）
+      [アラートメッセージ生成] ─→ [Merge: アラート+Token] → [LINE WORKS アラート送信] → [完了]
+      [Get line token (alert)] ──→ [Merge: アラート+Token]
 ```
+
+**データ品質チェックの仕様:**
+- BQクエリ: `COUNT(DISTINCT shop_group)` で昨日の shop_group 種類数を確認
+- 3種類でない場合 → LINE WORKS にアラート送信（通常の KPI通知はスキップ）
+- アラートメッセージ例:
+  ```
+  [KPIレポート] データ異常検知
+
+  対象日: 2026-04-05
+  shop_group種類数: 1種類(正常: 3種類)
+
+  TreasureData側のデータ取得を確認してください。BQへのインポート完了後、n8nワークフローを手動実行してください。
+  ```
+- 背景: TD→BQインポートが未完了のままデータが入ると全店が「新店」に統合される現象が発生（4/4確認）
 
 ### LINE WORKS 通知仕様（Carousel 3枚）
 
@@ -220,6 +244,8 @@ ORDER BY CASE d.shop_group WHEN '既存' THEN 1 WHEN '既存新店（FY24）' TH
 | 2026-04-01 | 5825 | ✓ Gmail送信成功、LINE WORKS 201 |
 | 2026-04-02 | 5833 | ✓ 両方成功（BQ 4/1データあり） |
 | 2026-04-03 | 5851 | BQ 0行（FORMAT_DATE % 問題）→ CAST書き換え済み |
+| 2026-04-04 | 5926 | BQ 1行のみ（新店180店、TD未完了インポートによるshop_group崩れ） |
+| 2026-04-05 | 5944 | BQ 1行のみ（同上、4/4データも新店180店） → データ品質チェック追加で対処 |
 
 ---
 
@@ -241,6 +267,7 @@ ORDER BY CASE d.shop_group WHEN '既存' THEN 1 WHEN '既存新店（FY24）' TH
 
 | 項目 | 状態 |
 |------|------|
-| 4/3以降のSchedule実行で正常動作確認（CAST書き換え後） | 未確認 |
+| 4/3以降のSchedule実行で正常動作確認（CAST書き換え後） | 4/4・4/5はTD未完了インポート問題で確認できず |
+| TD側 shop_group 崩れ問題の解消確認 | BQ担当者に修正依頼中 |
 | TD → BQ Export 設定 | 未完了 |
 | 予算・昨期比カラムの追加 | 未着手（budget_33期/34期_monthlyテーブルあり、要設計） |
