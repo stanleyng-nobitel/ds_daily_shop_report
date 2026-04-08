@@ -60,7 +60,7 @@ WHERE base_date >= CAST(DATE_TRUNC(CURRENT_DATE('Asia/Tokyo'), MONTH) AS STRING)
 
 | カラム | 集計方法 |
 |--------|---------|
-| `m_sales` | `ROUND(SUM(consumed_based_sales))` |
+| `m_sales` | `ROUND(SUM(consumed_based_sales))` ← **正式カラム名（確定）** |
 | `m_new_visitors` | `SUM(new_visitors)` |
 | `m_new_members` | `SUM(COALESCE(CAST(new_members AS INT64), 0))` |
 | `m_cancellations` | `SUM(CAST(membership_cancellations_count AS INT64))` |
@@ -104,7 +104,11 @@ GROUP BY shop_group
 
 ### 消化売上
 - **定義**: 当日（または当月MTD）に会員が実際に利用した売上。請求ベースではなく消化ベース。
-- **BQカラム**: `consumed_based_sales`
+- **BQカラム**: `consumed_based_sales` ← **正式カラム名（ユーザー確認済み・確定）**
+- **重要**: **ストレッチ＋指名料金の合計（税抜き）**。
+  - 含む: ストレッチ料金 ＋ 指名料金
+  - 税抜き金額
+  - 検証: 二子玉川店（shop_id: 2051）4/4実績 → 指名¥18,000 + ストレッチ¥195,143 = **¥213,143**（BQ値と一致確認済み）
 - **集計**: flow系・累計SUM
 - 日次: `ROUND(SUM(consumed_based_sales))`
 - MTD: `ROUND(SUM(consumed_based_sales))`
