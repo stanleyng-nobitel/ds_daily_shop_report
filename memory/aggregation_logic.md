@@ -258,6 +258,30 @@ ORDER BY: 既存=1, 既存新店（FY24）=2, 新店=3
 
 ---
 
+## 周期・アクティブ率（会員制リピーター限定版）
+
+> ※ 上記「来客周期」「アクティブ率」とは**使用カラムが異なる**別定義。
+
+### 周期（会員制リピーター）
+- **定義**: 会員制リピーターが1人あたり平均何回来店したか
+- **計算式**: `customer_count_repeater_membership / unique_customer_count_repeater_membership`
+- **BQカラム**:
+  - 分子: `customer_count_repeater_membership`（客数_リピーター_会員制）
+  - 分母: `unique_customer_count_repeater_membership`（客数_ユニーク_リピーター_会員制）
+- **集計**: flow系・MTD推奨（日次は≒1.0になりやすい）
+- **BQ式**: `ROUND(SAFE_DIVIDE(SUM(customer_count_repeater_membership), NULLIF(SUM(unique_customer_count_repeater_membership), 0)), 2)`
+
+### アクティブ率（会員制リピーター÷会員数）
+- **定義**: 保有会員のうち実際に来店したユニーク会員制リピーターの割合
+- **計算式**: `unique_customer_count_repeater_membership / membership_count × 100`
+- **BQカラム**:
+  - 分子: `unique_customer_count_repeater_membership`（客数_ユニーク_リピーター_会員制）
+  - 分母: `membership_count`（会員数）
+- **集計**: 分子=flow系、分母=stock系（最終日スナップショット）
+- **BQ式**: `ROUND(SAFE_DIVIDE(SUM(unique_customer_count_repeater_membership), NULLIF(SUM(membership_count), 0)) * 100, 1)`
+
+---
+
 ## 月初動作の期待値
 
 | 項目 | 動作 |

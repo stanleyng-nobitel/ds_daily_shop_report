@@ -157,14 +157,14 @@ ORDER BY CASE d.shop_group WHEN '既存' THEN 1 WHEN '既存新店（FY24）' TH
 | ワークフロー ID | `jhomsySSFmdWhzfH` |
 | ワークフロー名 | `Daily Store Report → LINE WORKS` |
 | ノード数 | 22 |
-| 状態 | **Active（毎朝9時 Schedule有効）** |
+| 状態 | **Active（毎日昼12時 Schedule有効）** |
 | n8n URL | `http://10.0.2.10:5678` |
 | n8n APIキー | `.env` の `N8N_API_KEY` を参照 |
 
 ### フロー構成
 
 ```
-[手動実行（テスト用）] または [毎朝9時実行（Schedule）]
+[手動実行（テスト用）] または [毎日昼12時実行（Schedule）]
  ↓
 [BQ: データ品質チェック]（shop_group種類数を確認）
  ↓
@@ -273,4 +273,4 @@ ORDER BY CASE d.shop_group WHEN '既存' THEN 1 WHEN '既存新店（FY24）' TH
 | TD → BQ Export 設定 | 未完了 |
 | 予算・昨期比カラムの追加 | 未着手（budget_33期/34期_monthlyテーブルあり、要設計） |
 | LINE WORKSチャットbot実装 | 未着手（プラン策定済み → `lineworks_bot_plan.md` 参照） |
-| n8n Scheduleを13時以降に変更 | 検討中（shop_group SQL完了後を保証するため） |
+| n8n Scheduleを12時に変更 | ✓ 完了（2026-04-08） |

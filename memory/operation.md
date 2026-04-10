@@ -35,7 +35,7 @@ _export:
             ③ 全日次処理完了後 → BQへ INSERT
      〜午前中  処理完了（4時間程度）
 
-     09:00  n8n Schedule 実行
+     12:00  n8n Schedule 実行
             → BQからKPIデータ取得 → LINE WORKS / Gmail 通知
 ```
 
@@ -99,9 +99,9 @@ WHERE base_date >= CAST(DATE_TRUNC(CURRENT_DATE('Asia/Tokyo'), MONTH) AS STRING)
 
 | 項目 | 値 |
 |------|-----|
-| 現在のSchedule | 毎朝 9:00（`0 9 * * *`） |
+| 現在のSchedule | 毎日昼 12:00（`0 12 * * *`） |
 | shop_group SQL完了時刻 | 12:00以降（推定） |
-| 推奨Schedule | 13:00以降に変更することを検討 |
+| 変更履歴 | 9:00 → 12:00 に変更済み（2026-04-08） |
 
 ---
 

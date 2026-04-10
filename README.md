@@ -9,7 +9,7 @@ BigQuery に蓄積された店舗KPIデータを n8n で毎朝集計し、LINE W
 | 項目 | 内容 |
 |------|------|
 | 通知先 | LINE WORKS（Carousel 3枚）+ Gmail |
-| 通知タイミング | 毎朝 9:00（n8n Schedule） |
+| 通知タイミング | 毎日昼 12:00（n8n Schedule） |
 | 集計対象 | 直営店（company_id=1）のみ |
 | 分類 | 既存 / 既存新店（FY24）/ 新店 の3グループ |
 | データソース | BigQuery（project: `n8n-td-claudecode`） |
