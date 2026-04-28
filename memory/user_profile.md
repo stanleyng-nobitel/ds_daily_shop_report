@@ -10,4 +10,4 @@ type: user
 - 非エンジニア向けのシステム・通知を多く構築している
 - LINE WORKS Bot（Bot ID: 1420096）を多数のワークフローで利用済み
 - Google Sheets との連携実績豊富（credential: stAsixak35mlitqr）
-- BigQuery は今後利用予定（初回）
+- BigQuery を運用中（project: n8n-td-claudecode、dataset: test_n8n_td_claudecode）
